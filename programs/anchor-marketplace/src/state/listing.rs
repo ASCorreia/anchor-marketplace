@@ -6,7 +6,6 @@ pub struct Listing {
     pub mint: Pubkey,
     pub price: u64,
     pub bump: u8,
-    pub vault_bump: u8
 }
 
 impl Space for Listing {

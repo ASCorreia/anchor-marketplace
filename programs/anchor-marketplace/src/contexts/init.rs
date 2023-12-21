@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{Mint, TokenInterface};
 
 use crate::state::Marketplace;
+use crate::errors::MarketplaceError;
 
 #[derive(Accounts)]
 #[instruction(name: String)]
@@ -10,8 +11,8 @@ pub struct Initialize<'info> {
     admin: Signer<'info>,
     #[account(
         init,
-        payer = admin,
         space = Marketplace::INIT_SPACE,
+        payer = admin,
         seeds = [b"marketplace", name.as_str().as_bytes()],
         bump
     )]
@@ -24,33 +25,29 @@ pub struct Initialize<'info> {
         mint::decimals = 6,
         mint::authority = marketplace,
     )]
-    rewards: InterfaceAccount<'info, Mint>,
+    rewards_mint: InterfaceAccount<'info, Mint>,
     #[account(
         seeds = [b"treasury", marketplace.key().as_ref()],
-        bump
+        bump,
     )]
     treasury: SystemAccount<'info>,
-    token_program: Interface<'info, TokenInterface>,
     system_program: Program<'info, System>,
+    token_program: Interface<'info, TokenInterface>,
 }
 
 impl<'info> Initialize<'info> {
     pub fn init(&mut self, name: String, fee: u16, bumps: &InitializeBumps) -> Result<()> {
-        match name.len() {
-            0..=32 => {
-                self.marketplace.set_inner( Marketplace {
-                    admin: self.admin.key(),
-                    fee,
-                    name,
-                    bump: bumps.marketplace,
-                    treasury_bump: bumps.treasury,
-                    rewards_bump: bumps.rewards,
-                })
-            }
+    
+        require!(name.len() > 0 && name.len() < 33, MarketplaceError::NameTooLong);
+        self.marketplace.set_inner(Marketplace {
+            admin: self.admin.key(),
+            fee,
+            name,
+            bump: bumps.marketplace,
+            treasury_bump: bumps.treasury,
+            rewards_bump: bumps.rewards_mint,
+        });
 
-            _ => msg!("Name too long"),
-        }
-        
         Ok(())
     }
 }

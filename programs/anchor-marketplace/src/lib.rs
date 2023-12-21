@@ -1,16 +1,16 @@
-mod contexts;
-use contexts::*;
-
-pub mod state;
-pub use state::*;
-
 use anchor_lang::prelude::*;
 
-declare_id!("mktYdagPAAnuHigRD62zLpHshZqx7vpKHjN3fN6MPjy");
+declare_id!("8MLJwZe8HY4B54xe2hPcpf7HeDdpa1qCsnYqsTfmxqf");
+
+pub mod state;
+pub mod contexts;
+pub mod errors;
+
+pub use contexts::*;
+pub use errors::*;
 
 #[program]
 pub mod anchor_marketplace {
-
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>, name: String, fee: u16) -> Result<()> {
@@ -29,7 +29,7 @@ pub mod anchor_marketplace {
     pub fn purchase(ctx: Context<Purchase>) -> Result<()> {
         ctx.accounts.send_sol()?;
         ctx.accounts.send_nft()?;
-        ctx.accounts.mint_rewards()?;
-        ctx.accounts.close_mint_ata()
+        ctx.accounts.close_mint_vault()
+
     }
 }
