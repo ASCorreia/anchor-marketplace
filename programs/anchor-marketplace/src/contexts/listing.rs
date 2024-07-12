@@ -15,22 +15,22 @@ pub struct List<'info> {
         seeds = [b"marketplace", marketplace.name.as_str().as_bytes()],
         bump = marketplace.bump,
     )]
-    marketplace: Account<'info, Marketplace>,
-    maker_mint: InterfaceAccount<'info, Mint>,
-    collection_mint: InterfaceAccount<'info, Mint>,
+    marketplace: Box<Account<'info, Marketplace>>,
+    maker_mint: Box<InterfaceAccount<'info, Mint>>,
+    collection_mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(
         mut,
         associated_token::authority = maker,
         associated_token::mint = maker_mint,
     )]
-    maker_ata: InterfaceAccount<'info, TokenAccount>,
+    maker_ata: Box<InterfaceAccount<'info, TokenAccount>>,
     #[account(
         init_if_needed,
         payer = maker,
         associated_token::mint = maker_mint,
         associated_token::authority = listing,
     )]
-    vault: InterfaceAccount<'info, TokenAccount>,
+    vault: Box<InterfaceAccount<'info, TokenAccount>>,
     #[account(
         init,
         payer = maker,
@@ -38,7 +38,7 @@ pub struct List<'info> {
         seeds = [marketplace.key().as_ref(), maker_mint.key().as_ref()],
         bump
     )]
-    listing: Account<'info, Listing>,
+    listing: Box<Account<'info, Listing>>,
     #[account(
         seeds = [
             b"metadata",
@@ -50,7 +50,7 @@ pub struct List<'info> {
         constraint = metadata.collection.as_ref().unwrap().key.as_ref() == collection_mint.key().as_ref(),
         constraint = metadata.collection.as_ref().unwrap().verified == true,
     )]
-    metadata: Account<'info, MetadataAccount>,
+    metadata: Box<Account<'info, MetadataAccount>>,
     #[account(
         seeds = [
             b"metadata",
@@ -61,7 +61,7 @@ pub struct List<'info> {
         seeds::program = metadata_program.key(),
         bump,
     )]
-    master_edition: Account<'info, MasterEditionAccount>,
+    master_edition: Box<Account<'info, MasterEditionAccount>>,
     metadata_program: Program<'info, Metadata>,
     associated_token_program: Program<'info, AssociatedToken>,
     system_program: Program<'info, System>,
