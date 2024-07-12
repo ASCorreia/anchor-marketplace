@@ -10,27 +10,27 @@ pub struct Delist<'info> {
         seeds = [b"marketplace", marketplace.name.as_str().as_bytes()],
         bump = marketplace.bump,
     )]
-    marketplace: Account<'info, Marketplace>,
-    maker_mint: InterfaceAccount<'info, Mint>,
+    marketplace: Box<Account<'info, Marketplace>>,
+    maker_mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(
         mut,
         associated_token::authority = maker,
         associated_token::mint = maker_mint,
     )]
-    maker_ata: InterfaceAccount<'info, TokenAccount>,
+    maker_ata: Box<InterfaceAccount<'info, TokenAccount>>,
     #[account(
         mut,
         close = maker,
         seeds = [marketplace.key().as_ref(), maker_mint.key().as_ref()],
         bump = listing.bump,
     )]
-    listing: Account<'info, Listing>,
+    listing: Box<Account<'info, Listing>>,
     #[account(
         mut,
         associated_token::mint = maker_mint,
         associated_token::authority = listing,
     )]
-    vault: InterfaceAccount<'info, TokenAccount>,
+    vault: Box<InterfaceAccount<'info, TokenAccount>>,
     token_program: Interface<'info, TokenInterface>,
     system_program: Program<'info, System>,
 }

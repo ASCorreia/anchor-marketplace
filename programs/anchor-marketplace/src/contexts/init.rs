@@ -16,7 +16,7 @@ pub struct Initialize<'info> {
         seeds = [b"marketplace", name.as_str().as_bytes()],
         bump
     )]
-    marketplace: Account<'info, Marketplace>,
+    marketplace: Box<Account<'info, Marketplace>>,
     #[account(
         init,
         seeds = [b"rewards", marketplace.key().as_ref()],
@@ -25,7 +25,7 @@ pub struct Initialize<'info> {
         mint::decimals = 6,
         mint::authority = marketplace,
     )]
-    rewards_mint: InterfaceAccount<'info, Mint>,
+    rewards_mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(
         seeds = [b"treasury", marketplace.key().as_ref()],
         bump,
