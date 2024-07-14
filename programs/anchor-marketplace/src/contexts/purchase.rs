@@ -47,7 +47,7 @@ pub struct Purchase<'info> {
         seeds = [b"treasury", marketplace.key().as_ref()],
         bump = marketplace.treasury_bump,
     )]
-    treasury: Box<InterfaceAccount<'info, TokenAccount>>,
+    treasury: SystemAccount<'info>,
     associated_token_program: Program<'info, AssociatedToken>,
     system_program: Program<'info, System>,
     token_program: Interface<'info, TokenInterface>,
