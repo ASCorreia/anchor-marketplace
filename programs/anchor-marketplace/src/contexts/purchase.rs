@@ -35,7 +35,7 @@ pub struct Purchase<'info> {
         mint::decimals = 6,
         mint::authority = marketplace,
     )]
-    rewards: Box<InterfaceAccount<'info, Mint>>,
+    rewards_mint: Box<InterfaceAccount<'info, Mint>>,
     #[account(
         mut,
         close = maker,
